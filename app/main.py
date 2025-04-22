@@ -9,4 +9,8 @@ app = FastAPI()
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
 
+@app.get("/health")
+def healthcheck():
+    return {"status": "healthy"}
+
 app.include_router(user.router, prefix=api_prefix + "/users")

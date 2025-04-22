@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     access_expire_min: int
     refresh_expire_days: int
     api_prefix: str
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_db: int = 0
 
     @property
     def async_database_url(self):

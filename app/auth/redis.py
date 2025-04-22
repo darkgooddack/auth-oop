@@ -1,7 +1,8 @@
 import redis.asyncio as redis
-import os
 
-r = redis.from_url(f"redis://{os.getenv('REDIS_HOST', 'localhost')}")
+from app.core.config import settings
+
+r = redis.from_url(f"redis://{settings.redis_host}:{settings.redis_port}/{settings.redis_db}")
 
 async def store_refresh_token(user_id: int, refresh_token: str):
     await r.set(f"user:{user_id}:refresh_token", refresh_token, ex=60 * 60 * 24 * 7)
