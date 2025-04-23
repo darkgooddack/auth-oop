@@ -7,7 +7,7 @@ from app.auth.redis import revoke_refresh_token
 from app.auth.jwt import get_current_user  # токен в Header
 
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", tags=["Auth"])
 
 @router.post("/register", response_model=UserRead)
 async def register(user: UserCreate, session: AsyncSession = Depends(get_async_session)):

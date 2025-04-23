@@ -6,12 +6,14 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.models.user import User
+from app.models.product import Product
 from app.db.init_db import Base
 from app.core.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+print(">>> DATABASE_URL:", settings.db.sync_url)
 
 if settings.db.sync_url:
     config.set_main_option("sqlalchemy.url", settings.db.sync_url)
