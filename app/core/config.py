@@ -1,39 +1,77 @@
-from pydantic_settings import BaseSettings
+import logging
+from functools import lru_cache
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-class Settings(BaseSettings):
-    db_host: str
-    db_port: str
-    db_name: str
-    db_user: str
-    db_password: str
+
+class JwtConfig(BaseModel):
     secret_key: str
     algorithm: str
     access_expire_min: int
     refresh_expire_days: int
-    api_prefix: str
-    redis_host: str = "localhost"
-    redis_port: int = 6379
-    redis_db: int = 0
+
+
+class RedisConfig(BaseModel):
+    host: str = "localhost"
+    port: int = 6379
+    db: int = 0
 
     @property
-    def async_database_url(self):
+    def dsn(self) -> str:
+        return f"redis://{self.host}:{self.port}/{self.db}"
+
+
+class DatabaseConfig(BaseModel):
+    host: str
+    port: str
+    name: str
+    user: str
+    password: str
+
+    @property
+    def async_url(self) -> str:
         return (
-            f"postgresql+asyncpg://{self.db_user}:{self.db_password}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
+            f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
         )
 
     @property
-    def sync_database_url(self):
+    def sync_url(self) -> str:
         return (
-            f"postgresql://{self.db_user}:{self.db_password}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
+            f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
         )
 
-    class Config:
-        env_file = ".env"
 
-settings = Settings()
+class LoggingConfig(BaseModel):
+    level: str = "info"
+
+    @property
+    def level_value(self) -> int:
+        return logging.getLevelNamesMapping().get(self.level.upper(), logging.INFO)
+
+
+class ApiConfig(BaseModel):
+    prefix: str = "/api/v1"
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=(".env",),
+        case_sensitive=False,
+        env_nested_delimiter="__",
+    )
+
+    db: DatabaseConfig
+    jwt: JwtConfig
+    redis: RedisConfig = RedisConfig()
+    logging: LoggingConfig = LoggingConfig()
+    api: ApiConfig = ApiConfig()
+
+
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()
+
+settings = get_settings()
 
 def __getattr__(name: str):
-    return getattr(settings, name)
-
+    return getattr(get_settings(), name)
