@@ -3,6 +3,10 @@ from functools import lru_cache
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+class StripeConfig(BaseModel):
+    secret_key: str
+    public_key: str
+
 class JwtConfig(BaseModel):
     secret_key: str
     algorithm: str
@@ -53,6 +57,7 @@ class Settings(BaseSettings):
     redis: RedisConfig = RedisConfig()
     logging: LoggingConfig = LoggingConfig()
     api: ApiConfig = ApiConfig()
+    stripe: StripeConfig
 
     model_config = SettingsConfigDict(
         env_file=".env",

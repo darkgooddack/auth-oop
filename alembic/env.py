@@ -13,7 +13,6 @@ from app.core.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-print(">>> DATABASE_URL:", settings.db.sync_url)
 
 if settings.db.sync_url:
     config.set_main_option("sqlalchemy.url", settings.db.sync_url)
