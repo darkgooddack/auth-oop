@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from app.api.v1 import user
+from app.api.v1 import routers
 from app.core.config import settings
 
 app = FastAPI()
+
+for router in routers:
+    app.include_router(router, prefix=settings.api.prefix)
 
 @app.get("/")
 async def redirect_to_docs():
@@ -12,6 +15,4 @@ async def redirect_to_docs():
 @app.get("/health")
 def healthcheck():
     return {"status": "healthy"}
-
-app.include_router(user.router, prefix=settings.api.prefix + "/users")
 

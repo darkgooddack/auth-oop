@@ -3,13 +3,11 @@ from functools import lru_cache
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 class JwtConfig(BaseModel):
     secret_key: str
     algorithm: str
     access_expire_min: int
     refresh_expire_days: int
-
 
 class RedisConfig(BaseModel):
     host: str = "localhost"
@@ -20,10 +18,9 @@ class RedisConfig(BaseModel):
     def dsn(self) -> str:
         return f"redis://{self.host}:{self.port}/{self.db}"
 
-
 class DatabaseConfig(BaseModel):
     host: str
-    port: str
+    port: int
     name: str
     user: str
     password: str
@@ -40,7 +37,6 @@ class DatabaseConfig(BaseModel):
             f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
         )
 
-
 class LoggingConfig(BaseModel):
     level: str = "info"
 
@@ -48,24 +44,21 @@ class LoggingConfig(BaseModel):
     def level_value(self) -> int:
         return logging.getLevelNamesMapping().get(self.level.upper(), logging.INFO)
 
-
 class ApiConfig(BaseModel):
     prefix: str = "/api/v1"
 
-
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=(".env",),
-        case_sensitive=False,
-        env_nested_delimiter="__",
-    )
-
     db: DatabaseConfig
     jwt: JwtConfig
     redis: RedisConfig = RedisConfig()
     logging: LoggingConfig = LoggingConfig()
     api: ApiConfig = ApiConfig()
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        env_nested_delimiter="__"
+    )
 
 @lru_cache()
 def get_settings() -> Settings:
@@ -73,5 +66,5 @@ def get_settings() -> Settings:
 
 settings = get_settings()
 
-def __getattr__(name: str):
+def get_attr(name: str):
     return getattr(get_settings(), name)
