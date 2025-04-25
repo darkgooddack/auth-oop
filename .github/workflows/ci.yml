@@ -61,10 +61,21 @@ jobs:
       - name: Run docker-compose
         run: docker-compose -f docker-compose.yml up --build -d
 
-      - name: Healthcheck
+      - name: Wait for app to be ready
         run: |
-          curl --fail http://localhost:8000/health
+          echo "Waiting for app to be ready..."
+          for i in {1..10}; do
+            if curl --silent --fail http://localhost:8000/health; then
+              echo "App is ready!"
+              exit 0
+            else
+              echo "Waiting for app... ($i/10)"
+              sleep 5
+            fi
+          done
+          echo "App did not become ready in time."
+          docker-compose logs
+          exit 1
 
       - name: Clean up Docker containers
-        run: |
-          docker-compose -f docker-compose.yml down
+        run: docker-compose -f docker-compose.yml down
