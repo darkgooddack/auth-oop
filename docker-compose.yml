@@ -43,14 +43,8 @@ services:
       - redis
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgres://${DB__USER}:${DB__PASSWORD}@${DB__HOST}:${DB__PORT}/${DB__NAME}
-      - REDIS_URL=redis://${REDIS__HOST}:${REDIS__PORT}/${REDIS__DB}
-      - SECRET_KEY=${JWT__SECRET_KEY}
-      - ALGORITHM=${JWT__ALGORITHM}
-      - ACCESS_EXPIRE_MIN=${JWT__ACCESS_EXPIRE_MIN}
-      - REFRESH_EXPIRE_DAYS=${JWT__REFRESH_EXPIRE_DAYS}
-      - API_PREFIX=${API__PREFIX}
+    env_file:
+      - .env
     networks:
       - app-network
     healthcheck:
