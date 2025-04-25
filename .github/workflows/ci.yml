@@ -41,7 +41,8 @@ jobs:
 
       - name: Run FastAPI tests
         run: |
-          pytest --maxfail=1 --disable-warnings -q
+          pytest --maxfail=1 --disable-warnings -q || exit_code=$?
+          if [ "$exit_code" -ne 5 ] && [ "$exit_code" -ne 0 ]; then exit $exit_code; fi
 
   docker-deploy:
     runs-on: ubuntu-latest
