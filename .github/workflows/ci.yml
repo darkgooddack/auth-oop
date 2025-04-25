@@ -59,7 +59,7 @@ jobs:
           docker-compose version
 
       - name: Run docker-compose
-        run: docker-compose -f docker/docker-compose.yml up --build -d
+        run: docker-compose -f docker-compose.yml up --build -d
 
       - name: Healthcheck
         run: |
