@@ -10,6 +10,8 @@
 - Nginx (балансировка + защита)
 - Swagger с авторизацией через JWT
 - Docker Compose для запуска всех сервисов
+- Prometheus (для мониторинга)
+- Grafana (для визуализации метрик)
 
 ## API Endpoints
 
