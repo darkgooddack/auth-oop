@@ -52,12 +52,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build and run Docker containers
+      - name: Set up Docker Compose
         run: |
-          docker-compose -f docker/docker-compose.yml up --build -d
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose version
+
+      - name: Run docker-compose
+        run: docker-compose -f docker/docker-compose.yml up --build -d
 
       - name: Healthcheck
         run: |
