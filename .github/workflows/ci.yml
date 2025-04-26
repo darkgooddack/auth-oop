@@ -58,6 +58,22 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose version
 
+      - name: Create .env file from secrets
+        run: |
+          echo "DB__USER=${{ secrets.DB__USER }}" >> .env
+          echo "DB__PASSWORD=${{ secrets.DB__PASSWORD }}" >> .env
+          echo "DB__NAME=${{ secrets.DB__NAME }}" >> .env
+          echo "DB__HOST=${{ secrets.DB__HOST }}" >> .env
+          echo "DB__PORT=${{ secrets.DB__PORT }}" >> .env
+          echo "JWT__SECRET_KEY=${{ secrets.JWT__SECRET_KEY }}" >> .env
+          echo "JWT__ALGORITHM=${{ secrets.JWT__ALGORITHM }}" >> .env
+          echo "JWT__ACCESS_EXPIRE_MIN=${{ secrets.JWT__ACCESS_EXPIRE_MIN }}" >> .env
+          echo "JWT__REFRESH_EXPIRE_DAYS=${{ secrets.JWT__REFRESH_EXPIRE_DAYS }}" >> .env
+          echo "API__PREFIX=${{ secrets.API__PREFIX }}" >> .env
+          echo "REDIS__HOST=${{ secrets.REDIS__HOST }}" >> .env
+          echo "REDIS__PORT=${{ secrets.REDIS__PORT }}" >> .env
+          echo "REDIS__DB=${{ secrets.REDIS__DB }}" >> .env
+
       - name: Run docker-compose
         run: docker-compose -f docker-compose.yml up --build -d
         env:
