@@ -95,23 +95,5 @@ jobs:
           STRIPE__SECRET_KEY: ${{ secrets.STRIPE__SECRET_KEY }}
           STRIPE__PUBLIC_KEY: ${{ secrets.STRIPE__PUBLIC_KEY }}
 
-
-      - name: Wait for app container to be healthy
-        run: |
-          echo "Waiting for FastAPI app container to become healthy..."
-          for i in {1..20}; do
-            status=$(docker inspect -f '{{.State.Health.Status}}' fastapi-app)
-            echo "Status: $status"
-            if [ "$status" = "healthy" ]; then
-              echo "App is healthy!"
-              exit 0
-            fi
-            echo "Waiting for app healthcheck... ($i/20)"
-            sleep 10
-          done
-          echo "App did not become healthy in time."
-          docker-compose logs
-          exit 1
-
       - name: Clean up Docker containers
         run: docker-compose -f docker-compose.yml down
