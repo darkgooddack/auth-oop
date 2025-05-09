@@ -6,7 +6,7 @@
 - Redis (для хранения Refresh Token)
 - Stripe API для оплаты
 - RabbitMQ для отправки заказов на кухню
-- CI/CD (GitHub Actions)
+- CI/CD (GitHub Actions) ♻️
 - Nginx (балансировка + защита)
 - Swagger с авторизацией через JWT
 - Docker Compose для запуска всех сервисов
