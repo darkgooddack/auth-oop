@@ -96,19 +96,20 @@ jobs:
           STRIPE__PUBLIC_KEY: ${{ secrets.STRIPE__PUBLIC_KEY }}
 
 
-      - name: Wait for app to be ready
+      - name: Wait for app container to be healthy
         run: |
-          echo "Waiting for app to be ready..."
+          echo "Waiting for FastAPI app container to become healthy..."
           for i in {1..20}; do
-            if curl --silent --fail http://localhost:8000/health; then
-              echo "App is ready!"
+            status=$(docker inspect -f '{{.State.Health.Status}}' fastapi-app)
+            echo "Status: $status"
+            if [ "$status" = "healthy" ]; then
+              echo "App is healthy!"
               exit 0
-            else
-              echo "Waiting for app... ($i/10)"
-              sleep 20
             fi
+            echo "Waiting for app healthcheck... ($i/20)"
+            sleep 10
           done
-          echo "App did not become ready in time."
+          echo "App did not become healthy in time."
           docker-compose logs
           exit 1
 
