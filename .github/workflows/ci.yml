@@ -79,11 +79,11 @@ jobs:
       - name: Run docker-compose
         run: docker-compose -f docker-compose.yml up --build -d
         env:
-          DB__USER: ${{ secrets.DB__USER }}
-          DB__PASSWORD: ${{ secrets.DB__PASSWORD }}
-          DB__NAME: ${{ secrets.DB__NAME }}
           DB__HOST: ${{ secrets.DB__HOST }}
           DB__PORT: ${{ secrets.DB__PORT }}
+          DB__NAME: ${{ secrets.DB__NAME }}
+          DB__USER: ${{ secrets.DB__USER }}
+          DB__PASSWORD: ${{ secrets.DB__PASSWORD }}
           JWT__SECRET_KEY: ${{ secrets.JWT__SECRET_KEY }}
           JWT__ALGORITHM: ${{ secrets.JWT__ALGORITHM }}
           JWT__ACCESS_EXPIRE_MIN: ${{ secrets.JWT__ACCESS_EXPIRE_MIN }}
